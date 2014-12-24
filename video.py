@@ -37,8 +37,7 @@ def trimEdges(raw, background):
     b[indices] = 0
     return b
 
-def getContours(img, fit_type = 'ellipse'):
-    CELL_RADIUS_THRESHOLD = 4
+def getContours(img, fit_type='ellipse', AREA_EXCLUSION_LIMITS=(200, 2000), CELL_RADIUS_THRESHOLD = 4):
     contours, hierarchy = cv2.findContours(img,
                                            cv2.RETR_TREE,
                                            cv2.CHAIN_APPROX_SIMPLE)
@@ -60,7 +59,7 @@ def getContours(img, fit_type = 'ellipse'):
             if len(contours[i]) >= 5:
                 ellipse = cv2.fitEllipse(contours[i])
                 area = np.pi*np.product(ellipse[1])
-                if area >= 200 and area < 2000:
+                if area >= AREA_EXCLUSION_LIMITS[0] and area < AREA_EXCLUSION_LIMITS[1]:
                     cv2.ellipse(img,ellipse,(0,255,0),-1)
     return img, contours, coord_list
     
